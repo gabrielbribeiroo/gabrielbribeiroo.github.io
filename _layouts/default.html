@@ -1,0 +1,104 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+        <title>{{ page.title }}</title>
+        <!-- link to main stylesheet -->
+    <script src="js/jquery.min.js"></script>
+    <script src="js/skel.min.js"></script>
+    <script src="js/skel-layers.min.js"></script>
+    <script src="js/init.js"></script>
+
+
+
+    <!-- MathJax options -->
+    <script type="text/x-mathjax-config">
+      MathJax.Hub.Config({
+        tex2jax: {
+          inlineMath: [ ['$','$'], ["\\(","\\)"] ],
+          displayMath: [ ['$$','$$'], ["\\[","\\]"] ],
+          processEscapes: true
+        }
+      });
+    </script>
+
+    <script type="text/javascript"
+        src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.0.0-alpha1/jquery.min.js">
+    </script>
+    <script type="text/javascript" async
+    src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.5/MathJax.js?config=TeX-MML-AM_CHTML">
+    </script>
+
+    <!-- Global site tag (gtag.js) - Google Analytics -->
+    <script async src="https://www.googletagmanager.com/gtag/js?id=UA-174649418-1"></script>
+    <script>
+      window.dataLayer = window.dataLayer || [];
+      function gtag(){dataLayer.push(arguments);}
+      gtag('js', new Date());
+
+      gtag('config', 'UA-174649418-1');
+    </script>
+
+    <script type="text/javascript"
+        src="http://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML">
+    </script>
+    <script src="https://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML" type="text/javascript">
+    
+    </script> 
+
+
+    <!-- <noscript> -->
+        <link rel="stylesheet" type="text/css" href="/css/skel.css" />
+        <link rel="stylesheet" type="text/css" href="/css/style.css" />
+        <link rel="stylesheet" type="text/css" href="/css/style-xlarge.css">
+    <!-- </noscript> -->
+    </head>
+    <body class="landing">
+
+    <!-- Header -->
+        <header id="header" class="alt">
+
+                <h1><strong><a href="https://www.ufpb.br/" target="_blank">UFPB</a></strong> Computer Science<br>
+            <nav id="nav">
+                <ul>
+                    <li><a href="/">Home</a></li>
+                    <li><a href="/research.html">Research</a></li>
+                    <li><a href="/blog.html">Blog</a></li>
+                    <li><a href="/docs/Gabriel_resume.pdf" target="_blank">Resume</a></li>
+                </ul>
+            </nav>
+        </header>
+
+    <!-- Banner -->
+        <section id="banner">
+            <h2>Gabriel Barbosa Ribeiro de Oliveira</h2>
+            <p>Computer Science Student | AI & Software Engineering Enthusiast</p>
+        </section>
+        <div class="container" style="max-width:800px">
+
+
+
+        {{ content }}
+
+        </div><!-- /.container -->
+
+
+
+<footer id="footer">
+    <div class="container">
+        <ul class="icons">
+            <li><a href="mailto:gabrielbroliveia@gmail.com" class="icon fa-envelope"></a></li>
+            <li><a href="https://instagram.com/gabrielbribeiroo/" class="icon fa-instagram"></a></li>
+            <li><a href="https://github.com/gabrielbribeiroo" class="icon fa-github"></a></li>
+            <li><a href="https://www.linkedin.com/in/gabrielbribeiroo" class="icon fa-linkedin"></a></li>
+        </ul>
+        <ul class="copyright">
+            <li>Copyright &copy; Gabriel Barbosa Ribeiro de Oliveira</li>
+            <li> HTML5</li>
+            <li>Design: <a href="http://templated.co">TEMPLATED</a></li>
+        </ul>
+    </div>
+</footer>
+
+        </body>
+    </html>
