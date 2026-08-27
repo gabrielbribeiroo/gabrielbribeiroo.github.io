@@ -526,6 +526,92 @@ footer { border-top: 1px solid var(--rule); padding: 2.25rem 0; }
 /* --- contadores --- */
 .stat .num { font-variant-numeric: tabular-nums; }
 
+/* =========================================================
+   SECOES PRESAS (scrollytelling)
+   Apenas Ventures e Trajetoria: sao as que carregam a
+   historia. A rolagem continua nativa - nada e sequestrado,
+   os links ancora e a busca da pagina seguem funcionando.
+   ========================================================= */
+
+/* --- Ventures: o palco fica preso e os cards se substituem --- */
+.pinned { padding: 0; }
+.pin-track { height: 320vh; position: relative; }
+.pin-stage {
+  position: sticky; top: 0; height: 100vh;
+  display: grid; align-items: center; overflow: hidden;
+}
+.pin-grid {
+  display: grid; grid-template-columns: 1fr 1.15fr;
+  gap: 4rem; align-items: center;
+}
+.pin-grid .section-head { margin-bottom: 0; }
+
+.pin-cards { position: relative; min-height: 26rem; }
+.pin-cards .pcard {
+  position: absolute; inset: 0;
+  display: flex; flex-direction: column; justify-content: center;
+  opacity: 0; transform: translateY(48px);
+  transition: opacity .7s var(--ease), transform .7s var(--ease);
+  pointer-events: none;
+}
+.pin-cards .pcard.is-active {
+  opacity: 1; transform: none; pointer-events: auto;
+}
+.pin-cards .pcard.is-past { opacity: 0; transform: translateY(-48px); }
+.pcard h3 { font-size: 2.4rem; }
+.pcard p { font-size: 1.02rem; }
+
+.pin-index {
+  font-family: var(--mono); font-size: .72rem;
+  letter-spacing: .2em; color: var(--ink-faint); margin-top: 2rem;
+}
+.pin-index b { color: var(--accent); font-weight: 500; }
+
+/* barra de avanco do palco */
+.pin-bar { height: 1px; background: var(--rule); margin-top: .9rem; position: relative; max-width: 20rem; }
+.pin-bar::after {
+  content: ""; position: absolute; inset: 0 auto 0 0;
+  width: calc(var(--pp, 0) * 100%); background: var(--accent);
+  transition: width .35s var(--ease);
+}
+
+/* --- Trajetoria: o cabecalho gruda, o razao passa ao lado --- */
+.tl-layout {
+  display: grid; grid-template-columns: 18rem 1fr; gap: 3.5rem;
+  align-items: start;
+}
+.tl-layout .section-head {
+  position: sticky; top: 7.5rem; margin-bottom: 0;
+}
+.tl-layout .timeline { border-top: 0; }
+.tl-layout .tl-item { grid-template-columns: 12rem 1fr; gap: 1.5rem; }
+.tl-layout .tl-date { white-space: nowrap; }
+.tl-item:first-child { border-top: 1px solid var(--rule); }
+
+/* contador de posicao no razao */
+.tl-count {
+  font-family: var(--mono); font-size: .7rem; letter-spacing: .18em;
+  color: var(--ink-faint); margin-top: 1.5rem;
+}
+.tl-count b { color: var(--accent); font-weight: 500; }
+
+@media (max-width: 900px) {
+  /* sem palco preso no celular: tudo volta ao fluxo normal */
+  .pin-track { height: auto; }
+  .pin-stage { position: static; height: auto; display: block; padding: 3.5rem 0; }
+  .pin-grid { grid-template-columns: 1fr; gap: 2.5rem; }
+  .pin-grid .section-head { margin-bottom: 2rem; }
+  .pin-cards { position: static; min-height: 0; display: grid; gap: 1px;
+               background: var(--rule); border: 1px solid var(--rule); }
+  .pin-cards .pcard {
+    position: static; opacity: 1 !important; transform: none !important;
+    pointer-events: auto; background: var(--paper); padding: 1.75rem;
+  }
+  .pin-index { display: none; }
+  .tl-layout { grid-template-columns: 1fr; gap: 2rem; }
+  .tl-layout .section-head { position: static; }
+}
+
 /* ---------- reveal ---------- */
 /* Reveal calibrado no mesmo ritmo do site da NextAct:
    1s ease-out, deslocamento de 32px, atrasos em passos de 100ms. */
@@ -551,6 +637,12 @@ footer { border-top: 1px solid var(--rule); padding: 2.25rem 0; }
   .split > i { transform: none !important; }
   .wipe > img { clip-path: none !important; }
   .marquee-track { animation: none !important; }
+  .pin-track { height: auto; }
+  .pin-stage { position: static; height: auto; display: block; padding: 3rem 0; }
+  .pin-cards { position: static; min-height: 0; }
+  .pin-cards .pcard { position: static; opacity: 1 !important; transform: none !important;
+                      pointer-events: auto; margin-bottom: 1.5rem; }
+  .tl-layout .section-head { position: static; }
   .portrait img, .section-head h2 { transform: none !important; }
   *, *::before, *::after { animation: none !important; transition: none !important; }
 }
@@ -571,8 +663,10 @@ footer { border-top: 1px solid var(--rule); padding: 2.25rem 0; }
   .wrap { width: calc(100% - 2rem); }
   section { padding: 3.5rem 0; }
   .hero { padding: 3rem 0 3.5rem; }
-  .tl-item { grid-template-columns: 1fr; gap: .5rem; }
-  .tl-date { padding-top: 0; }
+  .tl-item, .tl-layout .tl-item { grid-template-columns: 1fr; gap: .5rem; }
+  .tl-date, .tl-layout .tl-date { padding-top: 0; white-space: normal; }
+  /* no celular o deslocamento lateral empurraria a pagina para fora */
+  .reveal[data-reveal="left"], .reveal[data-reveal="right"] { transform: translateY(32px); }
   .nav-toggle { display: inline-flex; }
   .nav-links {
     position: fixed; inset: 72px 0 auto 0;

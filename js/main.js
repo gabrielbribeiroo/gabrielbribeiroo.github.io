@@ -278,6 +278,8 @@
         speed += (1 + v - speed) * 0.12;
         document.documentElement.style.setProperty('--mspeed', speed.toFixed(2));
       }
+      updatePin();
+      updateTl();
       ticking = false;
     });
   }
@@ -389,6 +391,73 @@
     }
     el.textContent = '0' + suffix;
     window.requestAnimationFrame(step);
+  }
+
+  /* ================= SECOES PRESAS ================= */
+  /* Le a posicao da rolagem e decide qual card esta em cena.
+     Nao intercepta o evento de scroll: apenas observa. */
+  var track   = document.querySelector('.pin-track');
+  var stageEl = document.querySelector('.pin-stage');
+  var pcards  = [].slice.call(document.querySelectorAll('.pin-cards .pcard'));
+  var pinIndex = document.querySelector('.pin-index');
+  var pinBar;
+
+  if (pinIndex) {
+    pinBar = document.createElement('div');
+    pinBar.className = 'pin-bar';
+    pinIndex.parentNode.insertBefore(pinBar, pinIndex.nextSibling);
+  }
+
+  function pinActive() {
+    return window.matchMedia('(min-width: 901px)').matches && !reduced;
+  }
+
+  function updatePin() {
+    if (!track || !pcards.length) return;
+
+    if (!pinActive()) {
+      pcards.forEach(function (c) { c.classList.remove('is-active', 'is-past'); });
+      return;
+    }
+
+    var r = track.getBoundingClientRect();
+    var total = r.height - window.innerHeight;
+    var p = total > 0 ? Math.min(Math.max(-r.top / total, 0), 1) : 0;
+
+    /* p vai de 0 a 1 ao longo do trecho preso; divide em N faixas */
+    var n = pcards.length;
+    var i = Math.min(Math.floor(p * n), n - 1);
+
+    pcards.forEach(function (c, k) {
+      c.classList.toggle('is-active', k === i);
+      c.classList.toggle('is-past', k < i);
+    });
+
+    if (pinIndex) {
+      pinIndex.innerHTML = '<b>' + ('0' + (i + 1)).slice(-2) + '</b> / ' +
+                           ('0' + n).slice(-2);
+    }
+    if (pinBar) pinBar.style.setProperty('--pp', ((i + 1) / n).toFixed(3));
+  }
+
+  /* posicao atual dentro do razao da trajetoria */
+  var tlItems = [].slice.call(document.querySelectorAll('#trajetoria .tl-item'));
+  var tlHead  = document.querySelector('#trajetoria .section-head');
+  var tlCount;
+  if (tlHead && tlItems.length) {
+    tlCount = document.createElement('div');
+    tlCount.className = 'tl-count';
+    tlHead.appendChild(tlCount);
+  }
+
+  function updateTl() {
+    if (!tlCount) return;
+    var mid = window.innerHeight * 0.45, cur = 0;
+    tlItems.forEach(function (el, k) {
+      if (el.getBoundingClientRect().top <= mid) cur = k;
+    });
+    tlCount.innerHTML = '<b>' + ('0' + (cur + 1)).slice(-2) + '</b> / ' +
+                        ('0' + tlItems.length).slice(-2);
   }
 
   /* ---------------- reveal on scroll ---------------- */
