@@ -273,7 +273,7 @@
           io.unobserve(entry.target);
         }
       });
-    }, { rootMargin: '0px 0px -8% 0px', threshold: 0.08 });
+    }, { rootMargin: '0px 0px -50px 0px', threshold: 0.1 });
     revealEls.forEach(function (el) { io.observe(el); });
     if (statsEl) io.observe(statsEl);
   } else {
