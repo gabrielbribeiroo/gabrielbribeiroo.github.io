@@ -32,7 +32,10 @@
 
   if (themeBtn) {
     themeBtn.addEventListener('click', function () {
+      // cross-fade das cores em vez de corte seco
+      document.body.classList.add('theming');
       applyTheme(root.getAttribute('data-theme') === 'light' ? 'dark' : 'light');
+      window.setTimeout(function () { document.body.classList.remove('theming'); }, 400);
     });
   }
 
@@ -227,14 +230,41 @@
 
   /* ---------------- nav shadow ---------------- */
   var nav = document.getElementById('nav');
+
+  /* hairline showing how far down the page you are */
+  var bar = document.createElement('div');
+  bar.className = 'progress';
+  document.body.appendChild(bar);
+
+  var ticking = false;
   function onScroll() {
-    if (nav) nav.classList.toggle('scrolled', window.scrollY > 8);
+    if (ticking) return;
+    ticking = true;
+    window.requestAnimationFrame(function () {
+      if (nav) nav.classList.toggle('scrolled', window.scrollY > 8);
+      var max = document.documentElement.scrollHeight - window.innerHeight;
+      bar.style.transform = 'scaleX(' + (max > 0 ? window.scrollY / max : 0) + ')';
+      ticking = false;
+    });
   }
   onScroll();
   window.addEventListener('scroll', onScroll, { passive: true });
+  window.addEventListener('resize', onScroll, { passive: true });
 
   /* ---------------- reveal on scroll ---------------- */
+  /* Siblings enter in sequence: --d is the element's index among the
+     .reveal nodes that share its parent, and CSS turns it into a delay. */
   var revealEls = [].slice.call(document.querySelectorAll('.reveal'));
+  revealEls.forEach(function (el) {
+    var group = [].slice.call(el.parentNode.children).filter(function (c) {
+      return c.classList && c.classList.contains('reveal');
+    });
+    var i = group.indexOf(el);
+    el.style.setProperty('--d', i > -1 ? Math.min(i, 6) : 0);
+  });
+
+  var statsEl = document.querySelector('.stats');
+
   if ('IntersectionObserver' in window) {
     var io = new IntersectionObserver(function (entries) {
       entries.forEach(function (entry) {
@@ -245,8 +275,10 @@
       });
     }, { rootMargin: '0px 0px -8% 0px', threshold: 0.08 });
     revealEls.forEach(function (el) { io.observe(el); });
+    if (statsEl) io.observe(statsEl);
   } else {
     revealEls.forEach(function (el) { el.classList.add('in'); });
+    if (statsEl) statsEl.classList.add('in');
   }
 
   /* ---------------- scrollspy ---------------- */
