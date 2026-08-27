@@ -9,6 +9,11 @@
 (function () {
   'use strict';
 
+  /* Declarado no topo: o i18n roda antes do modulo de movimento e ja
+     consulta esta preferencia. */
+  var reduced = !!(window.matchMedia &&
+                   window.matchMedia('(prefers-reduced-motion: reduce)').matches);
+
   /* ---------------- year ---------------- */
   var yearEl = document.getElementById('year');
   if (yearEl) yearEl.textContent = new Date().getFullYear();
@@ -195,6 +200,13 @@
     var cvLink = document.getElementById('cvLink');
     if (cvLink) cvLink.href = lang === 'en' ? 'docs/Gabriel_resume.pdf' : 'docs/Gabriel_curriculo.pdf';
     if (langBtn) langBtn.textContent = lang === 'en' ? 'PT' : 'EN';
+    /* o i18n reescreve o innerHTML, entao as palavras precisam ser
+       refatiadas e recolocadas no estado ja revelado */
+    if (typeof splitHeadings === 'function') {
+      splitHeadings();
+      [].slice.call(document.querySelectorAll('.section-head, .contact .wrap, .hero'))
+        .forEach(function (el) { el.classList.add('words-in'); });
+    }
     try { localStorage.setItem('lang', lang); } catch (e) {}
   }
 
@@ -236,20 +248,148 @@
   bar.className = 'progress';
   document.body.appendChild(bar);
 
-  var ticking = false;
+  var ticking = false, lastY = 0, speed = 1;
   function onScroll() {
     if (ticking) return;
     ticking = true;
     window.requestAnimationFrame(function () {
       if (nav) nav.classList.toggle('scrolled', window.scrollY > 8);
+      var y = window.scrollY;
       var max = document.documentElement.scrollHeight - window.innerHeight;
-      bar.style.transform = 'scaleX(' + (max > 0 ? window.scrollY / max : 0) + ')';
+      bar.style.transform = 'scaleX(' + (max > 0 ? y / max : 0) + ')';
+
+      if (!reduced) {
+        /* parallax: o retrato sobe mais devagar que o texto */
+        var portrait = document.querySelector('.portrait');
+        if (portrait) {
+          portrait.style.setProperty('--py', (y * -0.09).toFixed(1) + 'px');
+          portrait.style.setProperty('--ps', (1 + Math.min(y, 800) * 0.00012).toFixed(4));
+        }
+        /* os titulos de secao derivam de leve conforme entram */
+        [].slice.call(document.querySelectorAll('.section-head')).forEach(function (el) {
+          var r = el.getBoundingClientRect();
+          if (r.bottom < -200 || r.top > window.innerHeight + 200) return;
+          var p = 1 - (r.top / window.innerHeight);
+          el.style.setProperty('--hy', (p * -18).toFixed(1) + 'px');
+        });
+        /* o ticker acelera com a velocidade da rolagem */
+        var v = Math.min(Math.abs(y - lastY) / 8, 5);
+        lastY = y;
+        speed += (1 + v - speed) * 0.12;
+        document.documentElement.style.setProperty('--mspeed', speed.toFixed(2));
+      }
       ticking = false;
     });
   }
   onScroll();
   window.addEventListener('scroll', onScroll, { passive: true });
   window.addEventListener('resize', onScroll, { passive: true });
+
+  /* ================= STAGE MOTION ================= */
+
+  /* --- 1. cortina de abertura --- */
+  if (!reduced) {
+    var curtain = document.createElement('div');
+    curtain.className = 'curtain';
+    curtain.setAttribute('aria-hidden', 'true');
+    curtain.innerHTML = '<span>Gabriel Ribeiro</span>';
+    document.body.appendChild(curtain);
+    window.setTimeout(function () {
+      document.body.classList.add('curtain-done');
+    }, 2000);
+  }
+
+  /* --- 2. quebra o texto em palavras, cada uma atras de uma mascara ---
+     Elementos-filho (o italico do sobrenome, <em>, <strong>) entram
+     inteiros como uma unidade; so os nos de texto sao fatiados. */
+  function splitWords(el) {
+    if (!el || el.dataset.split === '1') return;
+    var nodes = [].slice.call(el.childNodes);
+    var frag = document.createDocumentFragment();
+    var i = 0;
+
+    function wrap(content, isNode) {
+      var outer = document.createElement('span');
+      outer.className = 'split';
+      outer.style.setProperty('--wi', i++);
+      var inner = document.createElement('i');
+      if (isNode) { inner.appendChild(content); }
+      else { inner.textContent = content; }
+      outer.appendChild(inner);
+      frag.appendChild(outer);
+    }
+
+    nodes.forEach(function (n) {
+      if (n.nodeType === 3) {
+        var parts = n.textContent.split(/(\s+)/);
+        parts.forEach(function (p) {
+          if (!p) return;
+          if (/^\s+$/.test(p)) { frag.appendChild(document.createTextNode(' ')); }
+          else { wrap(p, false); }
+        });
+      } else {
+        wrap(n, true);
+        frag.appendChild(document.createTextNode(' '));
+      }
+    });
+
+    el.innerHTML = '';
+    el.appendChild(frag);
+    el.dataset.split = '1';
+  }
+
+  function splitHeadings() {
+    if (reduced) return;
+    var els = [].slice.call(document.querySelectorAll(
+      '.hero h1, .section-head h2, .contact h2'
+    ));
+    els.forEach(function (el) {
+      /* Um titulo sem data-i18n nunca troca de conteudo: fatiar de novo
+         aninharia os wrappers a cada troca de idioma. */
+      if (!el.hasAttribute('data-i18n') && el.dataset.split === '1') return;
+      el.dataset.split = '';
+      splitWords(el);
+    });
+  }
+  splitHeadings();
+
+  /* o titulo do topo entra sozinho, logo apos a cortina */
+  var heroSec = document.querySelector('.hero');
+  if (heroSec && !reduced) {
+    window.setTimeout(function () { heroSec.classList.add('words-in'); }, 60);
+  } else if (heroSec) {
+    heroSec.classList.add('words-in');
+  }
+
+  /* --- 3. cortina nas imagens --- */
+  [].slice.call(document.querySelectorAll('.portrait, .proj .thumb')).forEach(function (el) {
+    if (!reduced) el.classList.add('wipe');
+  });
+
+  /* --- 4. ticker --- */
+  var track = document.querySelector('.marquee-track');
+  if (track) {
+    track.innerHTML = track.innerHTML + track.innerHTML;
+  }
+
+  /* --- 5. contadores --- */
+  function countUp(el) {
+    if (reduced || el.dataset.counted === '1') return;
+    el.dataset.counted = '1';
+    var raw = el.textContent.trim();
+    var m = raw.match(/^(\d+)(.*)$/);
+    if (!m) return;
+    var target = parseInt(m[1], 10), suffix = m[2], t0 = null;
+    function step(ts) {
+      if (t0 === null) t0 = ts;
+      var k = Math.min((ts - t0) / 1400, 1);
+      var eased = 1 - Math.pow(1 - k, 3);
+      el.textContent = Math.round(target * eased) + suffix;
+      if (k < 1) window.requestAnimationFrame(step);
+    }
+    el.textContent = '0' + suffix;
+    window.requestAnimationFrame(step);
+  }
 
   /* ---------------- reveal on scroll ---------------- */
   /* Siblings enter in sequence: --d is the element's index among the
@@ -276,9 +416,25 @@
     }, { rootMargin: '0px 0px -50px 0px', threshold: 0.1 });
     revealEls.forEach(function (el) { io.observe(el); });
     if (statsEl) io.observe(statsEl);
+
+    /* palavras dos titulos, cortinas de imagem e contadores */
+    var stage = new IntersectionObserver(function (entries) {
+      entries.forEach(function (entry) {
+        if (!entry.isIntersecting) return;
+        entry.target.classList.add('in', 'words-in');
+        [].slice.call(entry.target.querySelectorAll('.num')).forEach(countUp);
+        stage.unobserve(entry.target);
+      });
+    }, { rootMargin: '0px 0px -50px 0px', threshold: 0.1 });
+
+    [].slice.call(document.querySelectorAll(
+      '.section-head, .contact .wrap, .wipe, .stats'
+    )).forEach(function (el) { stage.observe(el); });
   } else {
     revealEls.forEach(function (el) { el.classList.add('in'); });
     if (statsEl) statsEl.classList.add('in');
+    [].slice.call(document.querySelectorAll('.section-head, .contact .wrap, .wipe'))
+      .forEach(function (el) { el.classList.add('in', 'words-in'); });
   }
 
   /* ---------------- scrollspy ---------------- */
