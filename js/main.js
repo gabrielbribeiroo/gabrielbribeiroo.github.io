@@ -172,6 +172,8 @@
       if (dict[key]) el.innerHTML = dict[key];
     });
     root.setAttribute('lang', lang === 'en' ? 'en' : 'pt-BR');
+    var cvLink = document.getElementById('cvLink');
+    if (cvLink) cvLink.href = lang === 'en' ? 'docs/Gabriel_resume.pdf' : 'docs/Gabriel_curriculo.pdf';
     if (langBtn) langBtn.textContent = lang === 'en' ? 'PT' : 'EN';
     try { localStorage.setItem('lang', lang); } catch (e) {}
   }
