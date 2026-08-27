@@ -173,6 +173,7 @@
     'edu.progress': 'Course progress',
     'v.months': 'Months in operation',
     'v.visit': 'Visit site',
+    'v.instagram': 'View on Instagram',
     'proj.live': 'View live',
     'edu.awards.date': 'Recognition',
     'edu.awards': 'Achievements and publications',
