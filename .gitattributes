@@ -1,0 +1,4 @@
+# PDFs e imagens sao binarios: nunca normalizar fim de linha.
+*.pdf binary
+*.jpg binary
+*.png binary
