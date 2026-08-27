@@ -170,6 +170,8 @@
     'edu.desc': 'GPA 9.044/10.0 - currently in the 7th semester.',
     'edu.courses': 'Relevant coursework:',
     'edu.courses.v': 'Data Structures, Applied Logic, Artificial Intelligence, Operations Research, Software Engineering and Statistics.',
+    'edu.progress': 'Course progress',
+    'v.months': 'Months in operation',
     'edu.awards.date': 'Recognition',
     'edu.awards': 'Achievements and publications',
     'edu.a1': 'Peer-reviewed paper at <strong>CSBC 2025</strong>, the largest Computing conference in Latin America',
