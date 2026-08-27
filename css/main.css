@@ -270,6 +270,12 @@ section + section { border-top: 1px solid var(--line-soft); }
 .grid-2 { display: grid; grid-template-columns: 1fr 1fr; gap: 1.4rem; }
 .grid-3 { display: grid; grid-template-columns: repeat(3, 1fr); gap: 1.2rem; }
 
+.vbadge {
+  font-family: var(--mono); font-size: .68rem; letter-spacing: .1em;
+  text-transform: uppercase; color: var(--accent-2); margin-bottom: .55rem;
+}
+.card > h3 { font-size: 1.15rem; margin-bottom: .5rem; }
+
 /* ---------- about ---------- */
 .about-grid { display: grid; grid-template-columns: 1.25fr .75fr; gap: 2.5rem; }
 .about-body p:last-child { margin-bottom: 0; }
