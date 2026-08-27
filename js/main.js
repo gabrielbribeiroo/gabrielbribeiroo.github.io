@@ -393,6 +393,82 @@
     window.requestAnimationFrame(step);
   }
 
+  /* ================= ROLAGEM SUAVIZADA =================
+     Inercia com interpolacao, no espirito do Lenis, mas sem
+     dependencia. Regras que a implementacao respeita:
+       - so no ponteiro fino (mouse). Toque mantem a inercia nativa.
+       - desligada com prefers-reduced-motion.
+       - teclado, barra de rolagem e ancoras continuam funcionando:
+         qualquer rolagem que nao veio da roda ressincroniza o alvo.
+     ==================================================== */
+  var smooth = !reduced &&
+               window.matchMedia('(pointer: fine)').matches &&
+               window.matchMedia('(min-width: 721px)').matches;
+
+  var sTarget = window.scrollY, sCurrent = sTarget, sRunning = false, sFromWheel = false;
+
+  function maxScroll() {
+    return document.documentElement.scrollHeight - window.innerHeight;
+  }
+
+  function sLoop() {
+    var diff = sTarget - sCurrent;
+    if (Math.abs(diff) < 0.4) {
+      sCurrent = sTarget;
+      window.scrollTo(0, Math.round(sCurrent));
+      sRunning = false;
+      sFromWheel = false;
+      return;
+    }
+    sCurrent += diff * 0.11;          /* quanto menor, mais longo o deslize */
+    window.scrollTo(0, Math.round(sCurrent));
+    window.requestAnimationFrame(sLoop);
+  }
+
+  function sStart() {
+    if (sRunning) return;
+    sRunning = true;
+    window.requestAnimationFrame(sLoop);
+  }
+
+  if (smooth) {
+    /* a rolagem por CSS brigaria com a interpolacao */
+    document.documentElement.style.scrollBehavior = 'auto';
+
+    window.addEventListener('wheel', function (e) {
+      if (e.ctrlKey) return;                 /* zoom do navegador */
+      if (e.target.closest && e.target.closest('[data-native-scroll]')) return;
+      e.preventDefault();
+      sFromWheel = true;
+      sTarget = Math.max(0, Math.min(sTarget + e.deltaY, maxScroll()));
+      sStart();
+    }, { passive: false });
+
+    /* qualquer outra origem de rolagem reassume o controle */
+    window.addEventListener('scroll', function () {
+      if (!sRunning) { sTarget = sCurrent = window.scrollY; }
+    }, { passive: true });
+
+    window.addEventListener('resize', function () {
+      sTarget = sCurrent = window.scrollY;
+    }, { passive: true });
+
+    /* ancoras deslizam ate o destino em vez de saltar */
+    document.addEventListener('click', function (e) {
+      var a = e.target.closest && e.target.closest('a[href^="#"]');
+      if (!a) return;
+      var id = a.getAttribute('href').slice(1);
+      var el = id && document.getElementById(id);
+      if (!el) return;
+      e.preventDefault();
+      var pad = parseFloat(getComputedStyle(document.documentElement).scrollPaddingTop) || 0;
+      sTarget = Math.max(0, Math.min(
+        el.getBoundingClientRect().top + window.scrollY - pad, maxScroll()));
+      sStart();
+      history.replaceState(null, '', '#' + id);
+    });
+  }
+
   /* ================= SECOES PRESAS ================= */
   /* Le a posicao da rolagem e decide qual card esta em cena.
      Nao intercepta o evento de scroll: apenas observa. */
