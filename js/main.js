@@ -172,6 +172,8 @@
     'edu.courses.v': 'Data Structures, Applied Logic, Artificial Intelligence, Operations Research, Software Engineering and Statistics.',
     'edu.progress': 'Course progress',
     'v.months': 'Months in operation',
+    'v.visit': 'Visit site',
+    'proj.live': 'View live',
     'edu.awards.date': 'Recognition',
     'edu.awards': 'Achievements and publications',
     'edu.a1': 'Peer-reviewed paper at <strong>CSBC 2025</strong>, the largest Computing conference in Latin America',

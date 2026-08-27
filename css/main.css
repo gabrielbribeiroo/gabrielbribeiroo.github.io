@@ -686,6 +686,39 @@ footer { border-top: 1px solid var(--rule); padding: 2.25rem 0; }
 }
 .section-head:hover h2::after { transform: scaleX(1); }
 
+/* --- cards que levam ao site --- */
+.card-link {
+  display: inline-flex; align-items: center; gap: .45rem;
+  margin-top: 1.4rem; align-self: flex-start;
+  font-family: var(--mono); font-size: .68rem;
+  text-transform: uppercase; letter-spacing: .14em;
+  color: var(--accent);
+  border-bottom: 1px solid transparent;
+  transition: border-color .3s var(--expo), gap .3s var(--expo);
+}
+.card-link svg { width: 13px; height: 13px; }
+
+/* a ancora se estica sobre o card inteiro: um unico link real,
+   card todo clicavel, e o teclado continua alcancando so um alvo */
+/* position:relative sem depender de :has() - se o seletor nao for
+   suportado, a ancora esticada vazaria para a secao inteira e viraria
+   um link invisivel cobrindo tudo */
+.card, .pcard { position: relative; }
+.card-link::after { content: ""; position: absolute; inset: 0; }
+
+.pcard:has(.card-link):hover, .card:has(.card-link):hover {
+  border-color: var(--accent); cursor: pointer;
+}
+.pcard:has(.card-link):hover .card-link,
+.card:has(.card-link):hover .card-link { border-bottom-color: var(--accent); gap: .75rem; }
+
+/* link de demo ao vivo */
+.proj-links .live { color: var(--accent); border-bottom-color: color-mix(in srgb, var(--accent) 40%, transparent); }
+.proj-links .live:hover { border-bottom-color: var(--accent); }
+.proj-links a { transition: color .3s var(--expo), border-color .3s var(--expo), gap .3s var(--expo); }
+.proj-links a:hover { gap: .6rem; }
+.proj-links svg { flex-shrink: 0; }
+
 /* ---------- reveal ---------- */
 /* Reveal calibrado no mesmo ritmo do site da NextAct:
    1s ease-out, deslocamento de 32px, atrasos em passos de 100ms. */
