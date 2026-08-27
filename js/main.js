@@ -26,8 +26,8 @@
   try { storedTheme = localStorage.getItem('theme'); } catch (e) {}
   if (storedTheme) {
     applyTheme(storedTheme);
-  } else if (window.matchMedia && window.matchMedia('(prefers-color-scheme: light)').matches) {
-    applyTheme('light');
+  } else if (window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches) {
+    applyTheme('dark');
   }
 
   if (themeBtn) {
