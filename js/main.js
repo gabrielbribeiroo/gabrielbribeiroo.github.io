@@ -54,6 +54,7 @@
     'stat.age': 'Age when I opened my first business',
     'stat.students': 'Students taught and mentored',
     'stat.gpa': 'GPA at UFPB',
+    'stat.gpa.num': '9.044<span style="font-size:.9rem">/10</span>',
 
     'v.eyebrow': 'Ventures',
     'v.title': 'What I got off the ground',
@@ -79,7 +80,7 @@
     'about.title': 'Founding came before graduating',
     'about.p1': 'I opened my first business at 17, before starting university. The pattern has repeated ever since: spot a gap, build the team, define the financial model and operate it. That was Ajuda Enem, and it is Connecta CI, which I founded to bring the Informatics Centre closer to the market.',
     'about.p2': 'The technical side is not separate from that - it is what lets me build alone when I need to. I write Python, C, Java and Prolog; I published a prediction system I designed from scratch at the Brazilian Logic Workshop; and today I lead requirements and backend architecture for an institutional platform at UFPB.',
-    'about.p3': 'University is the foundation, not the identity: a 9.0/10.0 GPA, a teaching assistantship in Applied Logic with 100+ students, and research at PET-Computing. What defines me, in the end, is the willingness to start something before having every answer - and whatever I found next.',
+    'about.p3': 'University is the foundation, not the identity: a 9.044/10.0 GPA, a teaching assistantship in Applied Logic with 100+ students, and research at PET-Computing. What defines me, in the end, is the willingness to start something before having every answer - and whatever I found next.',
 
     'facts.location': 'Location',
     'facts.role': 'Roles',
@@ -141,7 +142,7 @@
     'edu.eyebrow': 'Education',
     'edu.title': 'Education and recognition',
     'edu.degree': 'B.Sc. in Computer Science',
-    'edu.desc': 'GPA 9.0/10.0 - currently in the 5th semester.',
+    'edu.desc': 'GPA 9.044/10.0 - currently in the 7th semester.',
     'edu.courses': 'Relevant coursework:',
     'edu.courses.v': 'Data Structures, Applied Logic, Artificial Intelligence, Operations Research, Probability and Statistics.',
     'edu.awards.date': 'Recognition',
